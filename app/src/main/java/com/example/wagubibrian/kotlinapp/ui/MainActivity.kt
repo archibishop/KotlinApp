@@ -53,6 +53,7 @@ class MainActivity : AppCompatActivity() {
                 }
             })
 
+
         githubUserViewModel.githubUsersError().observe(this, Observer<String>{
             Log.d("Retrofit Call Error", "An error has occured $it")
         })
