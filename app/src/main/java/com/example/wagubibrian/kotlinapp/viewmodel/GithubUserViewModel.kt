@@ -15,6 +15,7 @@ class GithubUserViewModel @Inject constructor(private val dataRepository: DataRe
 
     var githubUsersResults: MutableLiveData<List<GithubUsersData>> = MutableLiveData()
     var githubUsersError: MutableLiveData<String> = MutableLiveData()
+    var usersLoader: MutableLiveData<Boolean> = MutableLiveData()
     lateinit var disposableObserver: DisposableObserver<List<GithubUsersData>>
 
     fun githubUsersResults(): LiveData<List<GithubUsersData>> {
@@ -25,7 +26,11 @@ class GithubUserViewModel @Inject constructor(private val dataRepository: DataRe
         return githubUsersError
     }
 
-    fun loadGithubUsers() {
+    fun usersLoader(): LiveData<Boolean> {
+        return usersLoader
+    }
+
+    fun loadGithubUsers(limit: Int, offset: Int) {
         disposableObserver = object : DisposableObserver<List<GithubUsersData>>() {
             override fun onComplete() {
 
@@ -33,14 +38,16 @@ class GithubUserViewModel @Inject constructor(private val dataRepository: DataRe
 
             override fun onNext(users: List<GithubUsersData>) {
                 githubUsersResults.postValue(users)
+                usersLoader.postValue(false)
             }
 
             override fun onError(e: Throwable) {
                 githubUsersError.postValue(e.message)
+                usersLoader.postValue(false)
             }
         }
 
-        dataRepository.getGithubUsersData()
+        dataRepository.getGithubUsersData(limit, offset)
             .subscribeOn(Schedulers.newThread())
             .observeOn(AndroidSchedulers.mainThread())
             .debounce(400, MILLISECONDS)

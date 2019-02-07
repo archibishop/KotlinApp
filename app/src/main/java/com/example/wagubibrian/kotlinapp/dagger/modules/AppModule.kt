@@ -5,6 +5,7 @@ import android.arch.lifecycle.ViewModelProvider
 import android.arch.persistence.room.Room
 import com.example.wagubibrian.kotlinapp.data.AppDatabase
 import com.example.wagubibrian.kotlinapp.data.GithubUsersDataDao
+import com.example.wagubibrian.kotlinapp.utils.Utils
 import com.example.wagubibrian.kotlinapp.viewmodel.GithubUserViewModelFactory
 import dagger.Module
 import dagger.Provides
@@ -30,7 +31,11 @@ class AppModule(val app: Application){
 
     @Provides
     @Singleton
-    fun provideCryptocurrenciesViewModelFactory(
+    fun provideGithubUserViewModelFactory(
         factory: GithubUserViewModelFactory): ViewModelProvider.Factory = factory
+
+    @Provides
+    @Singleton
+    fun provideUtils(): Utils = Utils(app)
 
 }
