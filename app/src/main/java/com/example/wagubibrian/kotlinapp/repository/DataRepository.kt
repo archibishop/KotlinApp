@@ -4,18 +4,24 @@ import android.util.Log
 import com.example.wagubibrian.kotlinapp.api.ApiInterface
 import com.example.wagubibrian.kotlinapp.data.GithubUsersData
 import com.example.wagubibrian.kotlinapp.data.GithubUsersDataDao
+import com.example.wagubibrian.kotlinapp.utils.Utils
 import io.reactivex.Observable
 import javax.inject.Inject
 
 
-class DataRepository @Inject constructor(val apiInterface: ApiInterface, val dao: GithubUsersDataDao){
+class DataRepository @Inject constructor(val apiInterface: ApiInterface, val dao: GithubUsersDataDao, val utils: Utils){
 
-    fun getGithubUsersData(): Observable<List<GithubUsersData>> {
+    fun getGithubUsersData(limit: Int, offset: Int): Observable<List<GithubUsersData>> {
 
-        val observableApi = getUsersFromRemote()
-        val observableRemote = getUsersFromDatabase()
+        val hasConnection = utils.isConnectedToInternet()
+        var observableApi: Observable<List<GithubUsersData>>? = null
+        if(hasConnection) {
+            observableApi = getUsersFromRemote()
+        }
+        val observableDb = getUsersFromDatabase(limit, offset)
 
-        return Observable.concatArrayEager(observableApi, observableRemote)
+        return if (hasConnection) Observable.concatArrayEager(observableApi, observableDb)
+        else observableDb
 
     }
 
@@ -31,9 +37,9 @@ class DataRepository @Inject constructor(val apiInterface: ApiInterface, val dao
 
     }
 
-    private fun getUsersFromDatabase(): Observable<List<GithubUsersData>> {
+    private fun getUsersFromDatabase(limit: Int, offset: Int): Observable<List<GithubUsersData>> {
         return dao
-            .queryGithubUsers()
+            .queryGithubUsers(limit, offset)
             .toObservable()
             .doOnNext{
                 Log.e("REPOSITORY DB *** ", it.size.toString())
