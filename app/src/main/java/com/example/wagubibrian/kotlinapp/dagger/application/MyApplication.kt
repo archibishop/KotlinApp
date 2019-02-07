@@ -4,13 +4,15 @@ import android.app.Activity
 import android.app.Application
 import com.example.wagubibrian.kotlinapp.dagger.component.DaggerAppComponent
 import com.example.wagubibrian.kotlinapp.dagger.modules.AppModule
+import com.example.wagubibrian.kotlinapp.dagger.modules.NetModule
 import dagger.android.AndroidInjector
 import dagger.android.DispatchingAndroidInjector
 import dagger.android.HasActivityInjector
 import javax.inject.Inject
 
 class MyApplication: Application(), HasActivityInjector {
-    @Inject lateinit var activityInjector: DispatchingAndroidInjector<Activity>
+    @Inject
+    lateinit var activityInjector: DispatchingAndroidInjector<Activity>
 
 
     override fun onCreate() {
@@ -19,8 +21,8 @@ class MyApplication: Application(), HasActivityInjector {
         DaggerAppComponent
             .builder()
             .appModule(AppModule(this))
-            .build()
-            .inject(this)
+            .netModule(NetModule("https://api.github.com/"))
+            .build().inject(this)
     }
 
     override fun activityInjector(): AndroidInjector<Activity> = activityInjector
