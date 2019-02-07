@@ -28,8 +28,8 @@ class GithubUsersAdapter (
     }
 
     override fun onBindViewHolder(holder: GithubUsersViewHolder, position: Int) {
-        val cryptocurrencyItem = githubUsersList[position]
-        holder?.cryptocurrencyListItem(cryptocurrencyItem)
+        val githubUser = githubUsersList[position]
+        holder?.githubUsersListItem(githubUser)
     }
 
     fun addUsers(users: List<GithubUsersData>){
@@ -40,10 +40,10 @@ class GithubUsersAdapter (
 
     class GithubUsersViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
-        var cryptocurrencyId = itemView.findViewById<TextView>(R.id.users_id)
+        var userId = itemView.findViewById<TextView>(R.id.users_id)
 
-        fun cryptocurrencyListItem(user: GithubUsersData) {
-            cryptocurrencyId.text = user.userName
+        fun githubUsersListItem(user: GithubUsersData) {
+            userId.text = user.userName
         }
     }
 
