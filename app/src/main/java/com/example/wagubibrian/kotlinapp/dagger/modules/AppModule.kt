@@ -1,9 +1,11 @@
 package com.example.wagubibrian.kotlinapp.dagger.modules
 
 import android.app.Application
+import android.arch.lifecycle.ViewModelProvider
 import android.arch.persistence.room.Room
 import com.example.wagubibrian.kotlinapp.data.AppDatabase
-import com.example.wagubibrian.kotlinapp.data.GithubUsersDao
+import com.example.wagubibrian.kotlinapp.data.GithubUsersDataDao
+import com.example.wagubibrian.kotlinapp.viewmodel.GithubUserViewModelFactory
 import dagger.Module
 import dagger.Provides
 import javax.inject.Singleton
@@ -24,6 +26,11 @@ class AppModule(val app: Application){
 
     @Provides
     @Singleton
-    fun provideDataDao(database: AppDatabase): GithubUsersDao = database.githubUsersDao()
+    fun provideDataDao(database: AppDatabase): GithubUsersDataDao = database.githubUsersDataDao()
+
+    @Provides
+    @Singleton
+    fun provideCryptocurrenciesViewModelFactory(
+        factory: GithubUserViewModelFactory): ViewModelProvider.Factory = factory
 
 }
